@@ -25,24 +25,19 @@
 import os
 import time
 import socket
-import base64
 import paramiko
 
 IP='IP'
-User='User'
+User='user'
 Passwd='passwd'
 Dir='~/ip_server/mac'
 File=Dir+'/'+'ip.txt'
 
 def main():
     client = paramiko.SSHClient()
-    ip=get_host_ip()
-    updteIP(client,ip)
     while 1:
-        new_ip=get_host_ip()
-        print new_ip
-        if new_ip !=ip:
-            updteIP(client,new_ip)
+        ip=get_host_ip()
+        updteIP(client,ip)
         time.sleep(600)
 
 def updteIP(client,ip):
@@ -77,7 +72,8 @@ def ssh_createFile(client):
 def ssh_writeIP(client,ip):
     stdin, stdout, stderr = client.exec_command('echo '+ip+' > ' + File)
     stdin, stdout, stderr = client.exec_command('cat '+ File)
-    print stdout.readlines()
+    for line in stdout:
+        print line.strip('\n')
 
 def ssh_close(client):
     client.close()
